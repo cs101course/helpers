@@ -30,7 +30,8 @@ int readUntilDelim(FILE *filePtr, char delimeter, char *string, int numChars);
  */
 long int intFromString(char *string, int numChars, int base, bool *isConverted);
 
-/* Read a string and attempt to convert it to a double (base 10).
+/* 
+ * Read a string and attempt to convert it to a double (base 10).
  * A maximum of numChars will be read, including the \0 terminator.
  * The value pointed to by isConverted will be set to true if conversion was successful,
  * and set to false otherwise.
@@ -40,21 +41,24 @@ long int intFromString(char *string, int numChars, int base, bool *isConverted);
 double doubleFromString(char *string, int numChars, bool *isConverted);
 
 
-/* Strip whitespace from the beginning and end of a string
+/* 
+ * Strip whitespace from the beginning and end of a string
  * A maximum of numChars will be read, including the \0 terminator.
  * The result will be saved to outputString.
  * Returns the number of characters (including \0 terminator) of outputString
  */
 int stripWhitespace(char *inputString, int numChars, char *outputString);
 
-/* Strip whitespace from the beginning of a string
+/* 
+ * Strip whitespace from the beginning of a string
  * A maximum of numChars will be read, including the \0 terminator.
  * The result will be saved to outputString.
  * Returns the number of characters (including \0 terminator) of outputString
  */
 int stripBeginningWhitespace(char *inputString, int numChars, char *outputString);
 
-/* Strip whitespace from the end of a string
+/* 
+ * Strip whitespace from the end of a string
  * A maximum of numChars will be read, including the \0 terminator.
  * The result will be saved to outputString.
  * Returns the number of characters (including \0 terminator) of outputString
