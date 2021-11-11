@@ -28,6 +28,9 @@ int readUntilDelim(FILE *filePtr, char delimeter, char *string, int maxChars) {
     isFinished = false;
     characterIndex = 0;
     currentChar = fgetc(filePtr);
+    if (currentChar == EOF) {
+        isFinished = true;
+    }
     while (characterIndex != maxChars && !isFinished) {
         if (currentChar == EOF || currentChar == delimeter) {
             // The current character is the end of file, or
@@ -44,7 +47,9 @@ int readUntilDelim(FILE *filePtr, char delimeter, char *string, int maxChars) {
     }
 
     // Finish off the string with the final null terminator
-    string[characterIndex-1] = '\0';
+    if (characterIndex > 0) {
+        string[characterIndex-1] = '\0';
+    }
 
     return characterIndex;
 }

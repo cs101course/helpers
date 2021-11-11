@@ -23,6 +23,17 @@ void testReadLine(void) {
     assert(charsRead == 25);
     assert(strncmp(line, "the cs101 helper library", charsRead) == 0);
 
+    // empty line
+    charsRead = readLine(filePtr, line, LINE_SIZE);
+    assert(charsRead == 1);
+
+    charsRead = readLine(filePtr, line, LINE_SIZE);
+    assert(charsRead == 5);
+
+    // end of file
+    charsRead = readLine(filePtr, line, LINE_SIZE);
+    assert(charsRead == 0);
+
     fclose(filePtr);
 }
 
