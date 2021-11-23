@@ -16,6 +16,7 @@ void Stack_destroy(Stack stackToDestroy);
 stackItem Stack_top(Stack stack);
 
 // Removes the top of the stack
+// Stack_size must be > 0
 void Stack_pop(Stack stack);
 
 // Pushes a value onto the top of the stack
