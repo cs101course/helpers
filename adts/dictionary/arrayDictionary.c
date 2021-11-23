@@ -43,7 +43,7 @@ Dictionary Dictionary_create(int maxSize) {
 
 // Remove memory used by Dictionary
 void Dictionary_destroy(Dictionary dictionary) {
-    // free the hash table
+    // free the array of pairs
     free(dictionary->pairs);
 
     // free the struct
@@ -83,7 +83,7 @@ void Dictionary_set(Dictionary dictionary, dictKey key, dictValue value) {
     
     if (!hasValue) {
         assert(length + 1 < dictionary->maxSize);
-        
+
         // copy over new key
         index = length;
         pair = &(dictionary->pairs[index]);
