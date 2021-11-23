@@ -42,8 +42,13 @@ unsigned int hash(dictKey key, int maxValue) {
         // according to the source, the magic of number 33 
         // (why it works better than many other constants, prime or not) 
         // has never been adequately explained.
-        // Some say 31 (which is prime) works well too.
-        hashValue = (hashValue * 33) + character;
+        // While it works well, some say it's supposed to be 31 (which is prime),
+        // which works well, as well.
+
+        // hashValue = (hashValue * 33) + character;
+        // (but implemented using a bit-shift ('<< 5' is the same as '* 32'), 
+        // as it's kinder to the CPU)
+        hashValue = ((hashValue << 5) + hashValue) + character;
     }
 
     return hashValue % maxValue;

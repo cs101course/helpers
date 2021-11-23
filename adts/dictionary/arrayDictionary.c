@@ -52,23 +52,23 @@ void Dictionary_destroy(Dictionary dictionary) {
 
 // Loop up a key/value pair by a key
 // This scans through the whole array until the key is found
-bool lookupPair(Dictionary dictionary, dictKey key, keyValuePair **pair) {
+// Returns a pointer to a key/value pair if found, NULL otherwise
+keyValuePair *lookupPair(Dictionary dictionary, dictKey key) {
     int index;
-    bool isKeyFound;
+    keyValuePair *pair;
 
-    isKeyFound = false;
     index = 0;
-    while (index < dictionary->length && !isKeyFound) {
+    pair = NULL;
+    while (index < dictionary->length && pair == NULL) {
         if (strncmp(key, dictionary->pairs[index].key, MAX_KEY_LENGTH) == 0) {
             // matching key
-            isKeyFound = true;
-            *pair = &(dictionary->pairs[index]);
+            pair = &(dictionary->pairs[index]);
         }
 
         index++;
     }
 
-    return isKeyFound;
+    return pair;
 }
 
 // Set the string key to a particular value
@@ -76,12 +76,11 @@ void Dictionary_set(Dictionary dictionary, dictKey key, dictValue value) {
     int index;
     int length;
     keyValuePair *pair;
-    bool hasValue;
     
     length = dictionary->length;
-    hasValue = lookupPair(dictionary, key, &pair);
+    pair = lookupPair(dictionary, key);
     
-    if (!hasValue) {
+    if (pair == NULL) {
         assert(length + 1 < dictionary->maxSize);
 
         // copy over new key
@@ -137,12 +136,11 @@ void Dictionary_delete(Dictionary dictionary, dictKey key) {
 dictValue Dictionary_get(Dictionary dictionary, dictKey key) {
     int length;
     keyValuePair *pair;
-    bool hasValue;
     
     length = dictionary->length;
-    hasValue = lookupPair(dictionary, key, &pair);
+    pair = lookupPair(dictionary, key);
     
-    assert(hasValue);
+    assert(pair != NULL);
 
     return pair->value;
 }
@@ -150,6 +148,5 @@ dictValue Dictionary_get(Dictionary dictionary, dictKey key) {
 // Returns true if the given string key exists in the dictionary
 // otherwise returns false
 bool Dictionary_hasKey(Dictionary dictionary, dictKey key) {
-    keyValuePair *pair;
-    return lookupPair(dictionary, key, &pair);
+    return lookupPair(dictionary, key) != NULL;
 }
