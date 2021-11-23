@@ -23,7 +23,7 @@ struct dictionary {
     int maxSize;
 };
 
-unsigned int hashFunction(dictKey key) {
+unsigned int hash(dictKey key, int maxValue) {
     // Hash function chosen from:
     // http://www.cse.yorku.ca/~oz/hash.html
     // It has likely been developed through experimentation
@@ -31,7 +31,7 @@ unsigned int hashFunction(dictKey key) {
     // A starting prime number for the hash calculation
     unsigned long startingPrime = 5381;
 
-    unsigned long hash = startingPrime;
+    unsigned long hashValue = startingPrime;
     char *str = key;
     unsigned int character;
 
@@ -43,10 +43,10 @@ unsigned int hashFunction(dictKey key) {
         // (why it works better than many other constants, prime or not) 
         // has never been adequately explained.
         // Some say 31 (which is prime) works well too.
-        hash = (hash * 33) + character;
+        hashValue = (hashValue * 33) + character;
     }
 
-    return hash;
+    return hashValue % maxValue;
 }
 
 // Returns the index of the key in the hash table, if found
@@ -61,7 +61,7 @@ int indexForKey(Dictionary dictionary, dictKey key) {
     foundIndex = NOT_FOUND;
     isProbingFinished = false;
     numSteps = 0; // how many cells have been probed
-    currentIndex = hashFunction(key) % dictionary->maxSize; // the starting index
+    currentIndex = hash(key, dictionary->maxSize); // the starting index
     while (!isProbingFinished && numSteps < dictionary->maxSize) {
         cell = &(dictionary->hashTable[currentIndex]);
 
@@ -96,7 +96,7 @@ int nextEmptyIndex(Dictionary dictionary, dictKey key) {
     indexFound = NOT_FOUND;
     isProbingFinished = false;
     numSteps = 0; // how many cells have been probed
-    currentIndex = hashFunction(key) % dictionary->maxSize; // the starting index
+    currentIndex = hash(key, dictionary->maxSize); // the starting index
     while (!isProbingFinished && numSteps < dictionary->maxSize) {
         cell = &(dictionary->hashTable[currentIndex]);
 
@@ -123,7 +123,7 @@ int nextEmptyIndex(Dictionary dictionary, dictKey key) {
 void removeGaps(Dictionary dictionary, int removedIndex) {
     int index;
     int prevIndex;
-    int hash;
+    int hashValue;
     int numSteps;
     bool isProbingFinished = false;
     hashTableCell *cell;
@@ -139,8 +139,8 @@ void removeGaps(Dictionary dictionary, int removedIndex) {
             // nothing more needs to be done
             isProbingFinished = true;
         } else {
-            hash = hashFunction(cell->key) % dictionary->maxSize;
-            if (hash == index) {
+            hashValue = hash(cell->key, dictionary->maxSize);
+            if (hashValue == index) {
                 // this key hashes perfectly,
                 // nothing more needs to be done
                 isProbingFinished = true;
