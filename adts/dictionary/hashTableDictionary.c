@@ -51,6 +51,8 @@ unsigned int hash(dictKey key, int maxValue) {
 
 // Returns the index of the key in the hash table, if found
 // NOT_FOUND otherwise
+// This is almost instantaneous as the key is hashed to an index,
+// and only scans if there is a collision
 int indexForKey(Dictionary dictionary, dictKey key) {
     int currentIndex;
     int foundIndex;
