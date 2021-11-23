@@ -82,6 +82,8 @@ void Dictionary_set(Dictionary dictionary, dictKey key, dictValue value) {
     hasValue = lookupPair(dictionary, key, &pair);
     
     if (!hasValue) {
+        assert(length + 1 < dictionary->maxSize);
+        
         // copy over new key
         index = length;
         pair = &(dictionary->pairs[index]);
