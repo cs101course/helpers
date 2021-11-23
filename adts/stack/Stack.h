@@ -1,4 +1,5 @@
 /* 
+ * Stack ADT
  * A stack of integers 
  */
 

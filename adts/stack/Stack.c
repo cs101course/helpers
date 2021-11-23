@@ -1,6 +1,6 @@
 /* 
+ * Stack ADT - Implementation
  * A stack of integers
- * Implementation
  */
 
 #include <stdlib.h>
