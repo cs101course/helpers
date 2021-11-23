@@ -58,11 +58,14 @@ keyValuePair *lookupPair(Dictionary dictionary, dictKey key) {
     keyValuePair *pair;
 
     index = 0;
-    pair = NULL;
+    pair = NULL; // NULL means not found
     while (index < dictionary->length && pair == NULL) {
         if (strncmp(key, dictionary->pairs[index].key, MAX_KEY_LENGTH) == 0) {
             // matching key
-            pair = &(dictionary->pairs[index]);
+            // set pair to point to the keyValuePair struct in the array at the current index
+            // N.B. this could also be written as:
+            // pair = &(dictionary->pairs[index]);
+            pair = dictionary->pairs + index;
         }
 
         index++;
@@ -81,6 +84,9 @@ void Dictionary_set(Dictionary dictionary, dictKey key, dictValue value) {
     pair = lookupPair(dictionary, key);
     
     if (pair == NULL) {
+        // no existing pair found
+
+        // ensure there's room
         assert(length + 1 < dictionary->maxSize);
 
         // copy over new key
@@ -106,7 +112,10 @@ void Dictionary_delete(Dictionary dictionary, dictKey key) {
     isKeyFound = false;
     index = 0;
     while (index < dictionary->length && !isKeyFound) {
-        pair = &(dictionary->pairs[index]);
+        // set pair to point to the keyValuePair struct in the array at the current index
+        // N.B. this could also be written as:
+        // pair = &(dictionary->pairs[index]);
+        pair = dictionary->pairs + index;
 
         if (strncmp(pair->key, key, MAX_KEY_LENGTH) == 0) {
             // matching key
