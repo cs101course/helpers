@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include "cs101.h"
+#include "textFileHelpers.h"
 
 #define LINE_SIZE 1024
 
