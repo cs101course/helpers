@@ -1,6 +1,6 @@
 #include <ctype.h>
 #include <stdlib.h>
-#include "cs101.h"
+#include "textFileHelpers.h"
 
 /* 
  * Read a line from the provided filePtr
