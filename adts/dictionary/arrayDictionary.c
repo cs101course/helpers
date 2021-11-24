@@ -52,26 +52,24 @@ void Dictionary_destroy(Dictionary dictionary) {
 
 // Loop up a key/value pair by a key
 // This scans through the whole array until the key is found
-// Returns a pointer to a key/value pair if found, NULL otherwise
-keyValuePair *lookupPair(Dictionary dictionary, dictKey key) {
-    int index;
-    keyValuePair *pair;
+// Returns the index of the given key in the keyValuePair array
+// if it exists, otherwise returns NOT_FOUND
+int findIndex(Dictionary dictionary, dictKey key) {
+    int currentIndex;
+    int correspondingIndex;
 
-    index = 0;
-    pair = NULL; // NULL means not found
-    while (index < dictionary->length && pair == NULL) {
-        if (strncmp(key, dictionary->pairs[index].key, MAX_KEY_LENGTH) == 0) {
+    correspondingIndex = NOT_FOUND;
+    currentIndex = 0;
+    while (currentIndex < dictionary->length && correspondingIndex == NOT_FOUND) {
+        if (strncmp(key, dictionary->pairs[currentIndex].key, MAX_KEY_LENGTH) == 0) {
             // matching key
-            // set pair to point to the keyValuePair struct in the array at the current index
-            // N.B. this could also be written as:
-            // pair = &(dictionary->pairs[index]);
-            pair = dictionary->pairs + index;
+            correspondingIndex = currentIndex;
         }
 
-        index++;
+        currentIndex++;
     }
 
-    return pair;
+    return correspondingIndex;
 }
 
 // Set the string key to a particular value
@@ -80,10 +78,10 @@ void Dictionary_set(Dictionary dictionary, dictKey key, dictValue value) {
     int length;
     keyValuePair *pair;
     
+    index = findIndex(dictionary, key);
     length = dictionary->length;
-    pair = lookupPair(dictionary, key);
-    
-    if (pair == NULL) {
+
+    if (index == NOT_FOUND) {
         // no existing pair found
 
         // ensure there's room
@@ -91,9 +89,11 @@ void Dictionary_set(Dictionary dictionary, dictKey key, dictValue value) {
 
         // copy over new key
         index = length;
-        pair = &(dictionary->pairs[index]);
+        pair = dictionary->pairs + index;
         strncpy(pair->key, key, MAX_KEY_LENGTH);
         dictionary->length++;
+    } else {
+        pair = dictionary->pairs + index;
     }
 
     pair->value = value;
@@ -105,34 +105,15 @@ void Dictionary_set(Dictionary dictionary, dictKey key, dictValue value) {
 // then it replaces that cell with the next one, from that point onwards.
 void Dictionary_delete(Dictionary dictionary, dictKey key) {
     int index;
-    int removedIndex;
-    bool isKeyFound;
-    keyValuePair *pair;
 
-    isKeyFound = false;
-    index = 0;
-    while (index < dictionary->length && !isKeyFound) {
-        // set pair to point to the keyValuePair struct in the array at the current index
-        // N.B. this could also be written as:
-        // pair = &(dictionary->pairs[index]);
-        pair = dictionary->pairs + index;
-
-        if (strncmp(pair->key, key, MAX_KEY_LENGTH) == 0) {
-            // matching key
-            removedIndex = index;
-            isKeyFound = true;
-        }
-
-        index++;
-    }
+    index = findIndex(dictionary, key);
 
     // Must only delete keys that exist
-    assert(isKeyFound);
+    assert(index != NOT_FOUND);
 
     // shrink the dictionary
     dictionary->length--;
 
-    index = removedIndex;
     while (index < dictionary->length) {
         // override the current index with the one after
         dictionary->pairs[index] = dictionary->pairs[index+1];
@@ -143,19 +124,18 @@ void Dictionary_delete(Dictionary dictionary, dictKey key) {
 
 // Returns the value for the given string key
 dictValue Dictionary_get(Dictionary dictionary, dictKey key) {
-    int length;
-    keyValuePair *pair;
+    int index;
     
-    length = dictionary->length;
-    pair = lookupPair(dictionary, key);
-    
-    assert(pair != NULL);
+    index = findIndex(dictionary, key);
 
-    return pair->value;
+    // Must only get keys that exist
+    assert(index != NOT_FOUND);
+
+    return dictionary->pairs[index].value;
 }
 
 // Returns true if the given string key exists in the dictionary
 // otherwise returns false
 bool Dictionary_hasKey(Dictionary dictionary, dictKey key) {
-    return lookupPair(dictionary, key) != NULL;
+    return findIndex(dictionary, key) != NOT_FOUND;
 }
